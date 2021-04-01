@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+  <head>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <title>Memoria</title>
+
+  </head>  
+  <body style="height: inherit">
+    <div id="root" style="height: inherit"></div>  
+    
+    <script type="text/babel">
+
+        const All = () => {
+          const style = {
+            width: "inherit",
+            height: "inherit",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundImage:"url(https://www.tucaminodelbienestar.com/wp-content/uploads/2017/04/foto-fondo-negro.png)",
+            backgroundSize: "cover",
+          }
+
+          return(
+            <div style = {style}>
+              <Grid />
+            </div>
+          )
+
+        }
+
+        const Title = () =>{
+            const style = {
+              fontFamily: "'Times New Roman, sans-serif",
+              fontSize: "50px",
+              letterSpacing: "0.2px",
+              wordSpacing: "-5px",
+              color: "#FF59B3",
+              fontSeight: "700"
+            }
+            return(
+                <div>
+                    <h1 style = {style}>PRINCESAS MEMORIA</h1>
+                </div>
+            )
+
+        }
+
+        var imagenesprincesas = ["https://getwallpapers.com/wallpaper/full/d/8/f/1383986-cool-princess-jasmine-wallpapers-1080x1920.jpg", "https://getwallpapers.com/wallpaper/full/d/2/3/383438.jpg",
+        "https://getwallpapers.com/wallpaper/full/5/6/e/892989-amazing-elsa-wallpapers-1080x1920-photo.jpg", "https://getwallpapers.com/wallpaper/full/6/0/d/54163.jpg",
+        "https://getwallpapers.com/wallpaper/full/b/e/0/1455916-cool-disney-brave-wallpaper-1080x1920-for-htc.jpg", "http://f.vividscreen.info/soft/5e70be31155535840344bfa0899c214c/Princess-Mulan-1080x1920.jpg",
+        "https://wallpaperplay.com/walls/full/1/a/c/281698.jpg", "https://getwallpapers.com/wallpaper/full/1/0/3/1095258-pocahontas-wallpaper-1080x1920-for-ipad-pro.jpg",
+        "https://getwallpapers.com/wallpaper/full/d/8/f/1383986-cool-princess-jasmine-wallpapers-1080x1920.jpg", "https://getwallpapers.com/wallpaper/full/d/2/3/383438.jpg",
+        "https://getwallpapers.com/wallpaper/full/5/6/e/892989-amazing-elsa-wallpapers-1080x1920-photo.jpg", "https://getwallpapers.com/wallpaper/full/6/0/d/54163.jpg",
+        "https://getwallpapers.com/wallpaper/full/b/e/0/1455916-cool-disney-brave-wallpaper-1080x1920-for-htc.jpg", "http://f.vividscreen.info/soft/5e70be31155535840344bfa0899c214c/Princess-Mulan-1080x1920.jpg",
+        "https://wallpaperplay.com/walls/full/1/a/c/281698.jpg", "https://getwallpapers.com/wallpaper/full/1/0/3/1095258-pocahontas-wallpaper-1080x1920-for-ipad-pro.jpg"]
+
+        function shuffle(array) {
+          array.sort(() => Math.random() - 0.5);
+        }
+
+        const Grid = () => {
+          shuffle(imagenesprincesas)
+          const [totalCards, setTotalCards] = React.useState(imagenesprincesas.map((card,i)=> ({imagen:card, isFlipped:false, id:i})))
+          const [flippedCards, setLastFlipped] = React.useState([])
+          const [pairs, setpairs] = React.useState(0)
+          const [moves, setmoves] = React.useState(0)
+        
+          const style = {
+              display: "grid",
+              gridTemplateColumns: "130px 130px 130px 130px", 
+              gridTemplateRows: "180px 180px 180px 180px", 
+              justifyItems: "center",
+              alignItems: "center",
+              gridColumnGap: "50px",
+              gridRowGap: "10px",
+              padding: "10px"
+              }
+          const styleContainer = {
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center"
+              }
+          const styleCounter = {
+              fontFamily: "'Times New Roman', sans-serif",
+              fontSize: "40px",
+              letterSpacing: "0.2px",
+              wordSpacing: "-5px",
+              color: "#FF40A0",
+              fontSeight: "700"
+            }
+          const styleWin = {
+              fontFamily: "'Times New Roman', sans-serif",
+              fontSize: "80px",
+              letterSpacing: "0.2px",
+              wordSpacing: "-0.8px",
+              color: "#FFAFDA",
+              fontSeight: "700",
+              position: "absolute",
+              textShadow: "-4px -1px 0px #000000"
+            }
+
+          const flip = index => {
+            if(!totalCards[index].isFlipped){
+              const myCards = [...totalCards]
+              myCards[index].isFlipped = true
+              flippedCards.push(index)
+              setmoves(moves+1)
+              if(flippedCards.length == 2){
+                if(myCards[flippedCards[0]].imagen == myCards[flippedCards[1]].imagen){
+                  setpairs(pairs+1)
+                }else{
+                  setTimeout(()=>{
+                    const myCards = [...totalCards]
+                    myCards[flippedCards[0]].isFlipped = false
+                    myCards[flippedCards[1]].isFlipped = false
+                    setTotalCards(myCards)}, 1000)
+                }
+                setLastFlipped([])
+              }
+              setTotalCards(myCards)
+            }
+          }
+              return (
+                <div style = {styleContainer}>
+                  <Title/>
+                  <h1 style = {styleCounter}>Movimientos: {moves}</h1>
+                  <div style={style}>
+                    {totalCards.map((carta,i)=> <Carta key={carta.id} imagenatras={carta.imagen} setCardFlip={()=> flip(i)} isFlipped={carta.isFlipped}/>)}
+                  </div>
+                  {(pairs == 8) ? <h1 style = {styleWin}>Felicidades Ganasteee!</h1> : null}
+                </div>
+                )
+        }
+
+        const Carta = ({imagenatras, isFlipped, setCardFlip }) => {
+          const style = {
+              width: "100%",
+              height: "100%",
+              borderRadius: "5%",
+              position: "relative",
+              transition: "transform 0.6s",
+              perspective: "600px",
+              transformStyle:"preserve-3d",
+              transform: transtition()
+          }
+          function transtition(){
+              if(isFlipped){
+                return "rotateY(180deg)"
+              }else{
+                return "rotateY(0deg)"
+              }
+            }
+          const frente = {
+                height:"180px",
+                position:"absolute",
+                backfaceVisibility: "hidden",
+                transition:"transform 250ms linear",
+                transitionDelay: isFlipped ? "0s": "250ms",
+            }
+            const atras = {
+                height:"180px",
+                position:"absolute",
+                backfaceVisibility: "hidden",
+                transition:"transform 250ms linear",
+                transitionDelay: isFlipped ?"250ms": "0s",
+                transform: "rotateY(180deg)"
+            }
+            return(
+                <div onClick={setCardFlip} style={style}>
+                    <img src={imagenatras} style={atras}></img>  
+                    <img src="https://3diphonewallpaper.com/wp-content/uploads/2018/02/Rose-Gold-Marble-iPhone-Wallpaper.jpg" style={frente}></img>                   
+                </div>
+        )
+        }
+
+        ReactDOM.render(
+          <All />,
+          document.getElementById("root")
+        )
+    
+    </script>
+  </body>
+</html>
